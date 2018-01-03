@@ -1,0 +1,59 @@
+{
+  "metadata":   {
+    "name": "kube-svc-watch",
+    "namespace": "monitoring",
+    "annotations": {},
+    "labels": {"name": "kube-svc-watch"}
+  },
+  "apiVersion": "extensions/v1beta1",
+  "kind": "Deployment",
+  "spec":   {
+    "template":     {
+      "metadata":       {
+        "annotations":         {
+          "prometheus.io/port": "8080",
+          "prometheus.io/scrape": "true"
+        },
+        "labels": {"name": "kube-svc-watch"}
+      },
+      "spec":       {
+        "terminationGracePeriodSeconds": 30,
+        "imagePullSecrets": {},
+        "volumes": {},
+        "containers": [        {
+          "args":           [
+            "--logtostderr=true",
+            "--slack-channel=#sre-alerts",
+            "--slack-token=<redacted>",
+            "--terminate=true"
+          ],
+          "image": "gcr.io/bitnami-images/kube-svc-watch:jenkins-sre-k8s-kube-svc-watch-22",
+          "stdin": false,
+          "name": "kube-svc-watch",
+          "tty": false,
+          "resources": {"limits":           {
+            "memory": "32Mi",
+            "cpu": "10m"
+          }},
+          "env": {},
+          "ports": [          {
+            "name": "metrics",
+            "containerPort": 8080
+          }],
+          "command": ["kube-svc-watch"],
+          "volumeMounts": {}
+        }]
+      }
+    },
+    "replicas": 1,
+    "revisionHistoryLimit": 10,
+    "minReadySeconds": 30,
+    "strategy":     {
+      "type": "RollingUpdate",
+      "rollingUpdate":       {
+        "maxSurge": "25%",
+        "maxUnavailable": "25%"
+      }
+    }
+  }
+}
