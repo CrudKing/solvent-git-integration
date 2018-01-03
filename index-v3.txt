@@ -1,1 +1,0 @@
-Testing adding file from client two to central/origin repo.
