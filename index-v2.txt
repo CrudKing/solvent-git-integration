@@ -3,3 +3,5 @@ This is a test file to test Solvent Git integration
 v3 of file
 
 v4 fetch
+
+adding via ssh
